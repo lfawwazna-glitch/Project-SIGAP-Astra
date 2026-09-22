@@ -31,3 +31,4 @@ class SignalPhaseResource extends JsonResource
         ];
     }
 }
+

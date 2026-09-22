@@ -74,3 +74,4 @@ class Intersection extends Model
         return $this->hasMany(SystemStatusLog::class);
     }
 }
+

@@ -24,3 +24,4 @@ class CameraResource extends JsonResource
         ];
     }
 }
+

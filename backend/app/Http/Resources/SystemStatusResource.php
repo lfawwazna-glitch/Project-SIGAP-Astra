@@ -23,3 +23,4 @@ class SystemStatusResource extends JsonResource
         ];
     }
 }
+

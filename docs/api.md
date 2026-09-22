@@ -404,3 +404,4 @@ Format mengembalikan objek simpang tunggal seperti pada elemen array di endpoint
   ]
 }
 ```
+

@@ -56,3 +56,4 @@ class TrafficMeasurement extends Model
         return $this->belongsTo(Lane::class);
     }
 }
+

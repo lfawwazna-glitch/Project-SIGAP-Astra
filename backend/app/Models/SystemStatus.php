@@ -36,3 +36,4 @@ class SystemStatus extends Model
         return $this->belongsTo(Intersection::class);
     }
 }
+

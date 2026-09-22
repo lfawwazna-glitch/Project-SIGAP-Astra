@@ -179,3 +179,4 @@ class IntersectionSeeder extends Seeder
         );
     }
 }
+

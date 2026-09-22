@@ -47,3 +47,4 @@ class HeuristicDecision extends Model
         return $this->belongsTo(SignalPhase::class);
     }
 }
+

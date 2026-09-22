@@ -54,3 +54,4 @@ class SignalPhase extends Model
         return $this->hasMany(HeuristicDecision::class);
     }
 }
+

@@ -38,3 +38,4 @@ class SystemStatusLog extends Model
         return $this->belongsTo(Intersection::class);
     }
 }
+

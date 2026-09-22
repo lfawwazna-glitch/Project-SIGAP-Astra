@@ -50,3 +50,4 @@ class Approach extends Model
         return $this->hasMany(TrafficMeasurement::class);
     }
 }
+

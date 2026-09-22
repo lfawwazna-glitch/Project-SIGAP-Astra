@@ -1,5 +1,7 @@
+# Entity Relationship Diagram (ERD) - SIGAP Database
 # Entity Relationship Diagram (ERD) - SIGAP Database (Tahap 2)
 
+Dokumen ini menjelaskan rancangan skema basis data PostgreSQL untuk prototype sistem **SIGAP** (Sistem Pendukung Keputusan Pengaturan Fase Lampu Lalu Lintas Adaptif) pada Perempatan Jl. Ibrahim Adjie - Mall Tenth Avenue, Bandung.
 Dokumen ini menjelaskan rancangan skema basis data relasional PostgreSQL untuk sistem **SIGAP** (Sistem Pendukung Keputusan Pengaturan Fase Lampu Lalu Lintas Adaptif) pada **Perempatan Jl. Ibrahim Adjie - Mall Tenth Avenue, Bandung**.
 
 Seluruh struktur tabel, relasi, dan indeks pada sistem ini dikelola sepenuhnya melalui **Laravel Migrations** sebagai satu-satunya sumber kebenaran (*single source of truth*).
@@ -11,6 +13,8 @@ Seluruh struktur tabel, relasi, dan indeks pada sistem ini dikelola sepenuhnya m
 ```mermaid
 erDiagram
     INTERSECTIONS ||--o{ APPROACHES : "memiliki 4 arah"
+    INTERSECTIONS ||--o{ TRAFFIC_PHASE_LOGS : "mencatat riwayat fase"
+    APPROACHES ||--o{ LANES : "memiliki 2 lajur"
     INTERSECTIONS ||--o{ SIGNAL_PHASES : "memiliki konfigurasi fase"
     INTERSECTIONS ||--o{ SYSTEM_STATUSES : "mencatat status berkala"
     INTERSECTIONS ||--o{ HEURISTIC_DECISIONS : "menerima usulan durasi"
@@ -25,8 +29,10 @@ erDiagram
     SIGNAL_PHASES ||--o{ HEURISTIC_DECISIONS : "diberikan rekomendasi waktu"
 
     INTERSECTIONS {
+        int id PK
         bigint id PK
         varchar code UK "BDG-IBR-ADJ-01"
+        varchar name "Perempatan Jl. Ibrahim Adjie"
         varchar name "Perempatan Jl. Ibrahim Adjie Sisi Mall Tenth Avenue"
         varchar location "Bandung, Jawa Barat"
         text description
@@ -35,6 +41,9 @@ erDiagram
     }
 
     APPROACHES {
+        int id PK
+        int intersection_id FK
+        varchar direction "NORTH | SOUTH | EAST | WEST"
         bigint id PK
         bigint intersection_id FK
         varchar direction "WEST | NORTH | EAST | SOUTH"
@@ -44,6 +53,9 @@ erDiagram
     }
 
     LANES {
+        int id PK
+        int approach_id FK
+        varchar lane_type "OUTER_LANE | INNER_LANE"
         bigint id PK
         bigint approach_id FK
         varchar lane_type "outer | inner"
@@ -53,6 +65,9 @@ erDiagram
         timestamp updated_at
     }
 
+    SYSTEM_STATUS {
+        int id PK
+        varchar current_mode "SIGAP_ADAPTIVE | ATCS_NORMAL | FALLBACK_ATCS | OPERATOR_OVERRIDE"
     CAMERAS {
         bigint id PK
         bigint approach_id FK,UK
@@ -77,8 +92,15 @@ erDiagram
         timestamp updated_at
     }
 
+    TRAFFIC_PHASE_LOGS {
     TRAFFIC_MEASUREMENTS {
         bigint id PK
+        int intersection_id FK
+        varchar active_phase "EAST_WEST | NORTH_SOUTH"
+        varchar phase_color "GREEN | YELLOW | ALL_RED"
+        int duration_seconds
+        varchar mode
+        text decision_reason
         bigint camera_id FK
         bigint approach_id FK
         bigint lane_id FK "nullable"
@@ -136,8 +158,14 @@ erDiagram
 
 ---
 
+## 2. Penjelasan Entitas & Batasan Desain
 ## 2. Penjelasan Rinci Entitas & Hubungan Antar Tabel
 
+1. **`intersections`**: Menyimpan identitas simpang fisik yang disimulasikan.
+2. **`approaches`**: Merepresentasikan empat arah masuk simpang (Barat, Utara, Timur, Selatan).
+3. **`lanes`**: Merepresentasikan dua lajur per arah (Lajur Luar: belok kiri / lurus; Lajur Dalam: lurus / belok kanan).
+4. **`system_status`**: Mencatat status operasional aktif dan kondisi kesehatan komponen (AI, kamera, koneksi) untuk memicu logika fallback simulasi.
+5. **`traffic_phase_logs`**: Menyimpan riwayat perubahan fase lampu (Hijau $\rightarrow$ Kuning $\rightarrow$ Semua Merah $\rightarrow$ Hijau) beserta alasan pengambilan keputusan untuk perbandingan evaluasi mode adaptif vs normal.
 1. **`intersections`**: Entitas sentral yang menyimpan identitas fisik simpang yang dimodelkan.
 2. **`approaches`**: Empat arah geometrik masuk simpang (Barat, Utara, Timur, Selatan). Relasi *1-to-Many* dari simpang.
 3. **`lanes`**: Dua lajur masuk per arah (Lajur Luar: belok kiri / lurus; Lajur Dalam: lurus / belok kanan). Total 8 lajur untuk 4 arah.
@@ -162,5 +190,8 @@ erDiagram
 ## 3. Batasan Privasi & Desain Sistem
 
 > [!IMPORTANT]
+> **Privasi & Regulasi:**
+> Skema database **TIDAK** menyimpan nomor plat kendaraan, gambar wajah, maupun ID pelacakan (*tracking ID*). Sistem hanya berfokus pada agregasi jumlah kendaraan dalam antrean.
+
 > **Kepatuhan Privasi Data Publik:**
 > Basis data SIGAP **TIDAK** memuat kolom nomor plat kendaraan, gambar wajah pengemudi, maupun *tracking ID* individu. Sistem hanya mengelola data numerik volume kendaraan per kelas secara teragregasi dalam poligon zona antrean demi menjamin kepatuhan terhadap privasi publik.

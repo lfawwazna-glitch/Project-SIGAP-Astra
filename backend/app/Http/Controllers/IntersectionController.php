@@ -159,3 +159,4 @@ class IntersectionController extends Controller
         ], 200);
     }
 }
+

@@ -26,3 +26,4 @@ class IntersectionResource extends JsonResource
         ];
     }
 }
+

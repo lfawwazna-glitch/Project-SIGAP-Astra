@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 | API Routes - SIGAP Backend
 |--------------------------------------------------------------------------
+| Seluruh rute API publik dan internal untuk komunikasi dashboard,
+| FastAPI AI service, dan simulator fase lampu lalu lintas.
 | Seluruh rute API publik dan internal untuk komunikasi dashboard operator,
 | FastAPI AI service, dan simulator fase lampu lalu lintas adaptif.
 */
@@ -15,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 // Endpoint Kesehatan & Konektivitas Database
 Route::get('/health', [HealthController::class, 'check'])->name('api.health');
 
+// Fallback status rute
 // REST API Konfigurasi Simpang (Read-Only - Tahap 2)
 Route::prefix('intersections')->name('api.intersections.')->group(function () {
     Route::get('/', [IntersectionController::class, 'index'])->name('index');
@@ -28,6 +31,7 @@ Route::prefix('intersections')->name('api.intersections.')->group(function () {
 // Fallback root status API
 Route::get('/', function () {
     return response()->json([
+        'message' => 'SIGAP Backend API is running',
         'message' => 'SIGAP Backend REST API is running',
         'version' => '0.2.0-phase2',
         'health_check' => url('/api/health'),
@@ -36,3 +40,4 @@ Route::get('/', function () {
         ],
     ]);
 });
+

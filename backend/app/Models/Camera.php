@@ -36,3 +36,4 @@ class Camera extends Model
         return $this->hasMany(TrafficMeasurement::class);
     }
 }
+
