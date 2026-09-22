@@ -20,3 +20,4 @@ Route::get('/', function () {
         'health_check' => url('/api/health'),
     ]);
 });
+

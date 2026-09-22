@@ -46,3 +46,4 @@ def health_check():
         "tracking_enabled": False,
         "timestamp": datetime.now(timezone.utc).isoformat()
     }
+

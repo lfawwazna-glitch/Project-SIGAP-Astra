@@ -89,3 +89,4 @@ ON CONFLICT DO NOTHING;
 -- Seed Status Awal Sistem
 INSERT INTO system_status (current_mode, is_ai_healthy, is_cctv_healthy, notes)
 VALUES ('ATCS_NORMAL', TRUE, TRUE, 'Sistem awal berjalan dalam mode simulasi normal ATCS');
+

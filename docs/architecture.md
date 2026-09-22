@@ -133,3 +133,4 @@ stateDiagram-v2
 2. **Simulasi Tertutup:** Input video bersumber dari rekaman video uji coba lokal atau simulasi loop video, bukan RTSP resmi Dishub Bandung.
 3. **Privasi Total:** Tidak ada pengenalan identitas pengendara, wajah, atau nomor registrasi kendaraan bermotor (NRKB).
 4. **Geometri Tetap:** Konfigurasi geometrik simpang dibatasi pada Perempatan Jl. Ibrahim Adjie (4 arah, masing-masing 2 lajur masuk).
+

@@ -72,3 +72,4 @@ erDiagram
 > [!IMPORTANT]
 > **Privasi & Regulasi:**
 > Skema database **TIDAK** menyimpan nomor plat kendaraan, gambar wajah, maupun ID pelacakan (*tracking ID*). Sistem hanya berfokus pada agregasi jumlah kendaraan dalam antrean.
+

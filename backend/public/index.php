@@ -74,3 +74,4 @@ echo json_encode([
     'health_endpoint' => '/api/health',
     'timestamp' => gmdate('Y-m-d\TH:i:s\Z')
 ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+

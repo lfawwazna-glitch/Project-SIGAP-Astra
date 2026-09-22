@@ -152,3 +152,4 @@ Untuk menjalankan seluruh service secara terorkestrasi:
    - Logika deteksi anomali untuk *automatic fallback* ke mode ATCS normal jika AI atau video tidak merespons.
 4. **Tahap 5: Evaluasi & Komparasi Kinerja**
    - Pencatatan log metrik dan visualisasi perbandingan efisiensi waktu tunggu antara mode ATCS normal *fixed-time* versus SIGAP adaptif.
+
