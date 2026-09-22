@@ -37,6 +37,7 @@ backend/bootstrap/cache/*
 !backend/storage/framework/views/.gitignore
 !backend/storage/logs/.gitignore
 !backend/bootstrap/cache/.gitignore
+.phpunit.result.cache
 
 # PostgreSQL / Docker Volumes
 .docker-volumes/
@@ -49,4 +50,3 @@ Thumbs.db
 .vscode/
 *.swp
 *.swo
-
