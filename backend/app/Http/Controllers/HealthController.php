@@ -33,14 +33,15 @@ class HealthController extends Controller
         $atcsMode = env('DEFAULT_ATCS_MODE', 'ATCS_NORMAL');
 
         return response()->json([
-            'status' => 'ok',
+            'status' => $dbStatus['connected'] ? 'ok' : 'degraded',
             'service' => 'SIGAP Backend REST API (Laravel)',
             'version' => '0.1.0-baseline',
             'target_intersection' => 'Perempatan Jl. Ibrahim Adjie - Mall Tenth Avenue, Bandung',
             'atcs_mode' => $atcsMode,
+            'operating_context' => 'simulator',
             'database' => $dbStatus,
             'timestamp' => now()->toIso8601String(),
-        ], 200);
+        ], $dbStatus['connected'] ? 200 : 503);
     }
 }
 

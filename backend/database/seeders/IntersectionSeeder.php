@@ -10,6 +10,7 @@ use App\Models\SignalPhase;
 use App\Models\SystemStatus;
 use App\Models\SystemStatusLog;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class IntersectionSeeder extends Seeder
 {
@@ -19,8 +20,13 @@ class IntersectionSeeder extends Seeder
      */
     public function run(): void
     {
+        DB::transaction(fn () => $this->seedInitialConfiguration());
+    }
+
+    private function seedInitialConfiguration(): void
+    {
         // 1. Simpang Tunggal Prototipe
-        $intersection = Intersection::updateOrCreate(
+        $intersection = Intersection::firstOrCreate(
             ['code' => 'BDG-IBR-ADJ-01'],
             [
                 'name' => 'Perempatan Jl. Ibrahim Adjie Sisi Mall Tenth Avenue',
@@ -74,7 +80,7 @@ class IntersectionSeeder extends Seeder
         ];
 
         foreach ($approachesData as $data) {
-            $approach = Approach::updateOrCreate(
+            $approach = Approach::firstOrCreate(
                 [
                     'intersection_id' => $intersection->id,
                     'direction' => $data['direction'],
@@ -86,7 +92,7 @@ class IntersectionSeeder extends Seeder
 
             // 3. Dua Lajur Masuk per Arah (Outer & Inner)
             foreach ($data['lanes'] as $laneData) {
-                Lane::updateOrCreate(
+                Lane::firstOrCreate(
                     [
                         'approach_id' => $approach->id,
                         'lane_type' => $laneData['lane_type'],
@@ -99,7 +105,7 @@ class IntersectionSeeder extends Seeder
             }
 
             // 4. Satu Kamera per Arah (Kejujuran status: stream_url null, status UNCONFIGURED)
-            Camera::updateOrCreate(
+            Camera::firstOrCreate(
                 [
                     'approach_id' => $approach->id,
                 ],
@@ -114,21 +120,21 @@ class IntersectionSeeder extends Seeder
         }
 
         // 5. Status Awal Sistem (Kejujuran: ATCS_NORMAL, AI dan CCTV false)
-        SystemStatus::create([
-            'intersection_id' => $intersection->id,
+        SystemStatus::firstOrCreate(['intersection_id' => $intersection->id], [
             'current_mode' => 'ATCS_NORMAL',
             'is_ai_healthy' => false,
             'is_cctv_healthy' => false,
-            'notes' => 'Baseline prototype belum terhubung ke CCTV dan AI service',
+            'notes' => 'Simulator ATCS_NORMAL; menunggu data. CCTV belum dikonfigurasi dan AI standby tanpa inferensi.',
             'recorded_at' => now(),
         ]);
 
         // 6. Log Status Awal Sistem
-        SystemStatusLog::create([
+        SystemStatusLog::firstOrCreate([
             'intersection_id' => $intersection->id,
             'previous_mode' => null,
             'new_mode' => 'ATCS_NORMAL',
-            'reason' => 'Inisialisasi baseline prototype SIGAP mode ATCS_NORMAL',
+            'reason' => 'Inisialisasi simulator SIGAP mode ATCS_NORMAL',
+        ], [
             'payload' => [
                 'initialized_by' => 'system_seeder',
                 'atcs_mode' => 'ATCS_NORMAL',
@@ -142,7 +148,7 @@ class IntersectionSeeder extends Seeder
         // Disclaimer: Nilai durasi fase adalah parameter simulasi awal prototype,
         // bukan konfigurasi faktual ATCS Bandung Command Center. Batasan prototype:
         // hijau min 15s, hijau max 60s, kuning 3s, all-red 2s.
-        SignalPhase::updateOrCreate(
+        SignalPhase::firstOrCreate(
             [
                 'intersection_id' => $intersection->id,
                 'phase_code' => 'PHASE_EW',
@@ -160,7 +166,7 @@ class IntersectionSeeder extends Seeder
             ]
         );
 
-        SignalPhase::updateOrCreate(
+        SignalPhase::firstOrCreate(
             [
                 'intersection_id' => $intersection->id,
                 'phase_code' => 'PHASE_NS',

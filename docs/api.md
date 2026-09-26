@@ -1,8 +1,10 @@
-# Dokumentasi REST API - SIGAP (Tahap 2)
+# Dokumentasi REST API - SIGAP (Tahap 1 Backend)
 
 Dokumentasi ini mencakup seluruh endpoint REST API konfigurasi simpang dan status sistem pada backend Laravel SIGAP. Seluruh endpoint pada tahap ini bersifat **read-only** (metode `GET`).
 
 Base URL: `http://localhost:8000/api`
+
+Seluruh konfigurasi fase pada tahap ini adalah parameter simulator DSS. Kamera belum dikonfigurasi, AI standby, dan belum ada data deteksi CCTV nyata. Petunjuk startup Docker tersedia di [README](../README.md).
 
 ---
 
@@ -46,14 +48,15 @@ Base URL: `http://localhost:8000/api`
 * **Method:** `GET`
 * **Deskripsi:** Memeriksa status runtime backend Laravel, mode ATCS yang aktif, serta status koneksi ke basis data PostgreSQL. Endpoint ini menangani kegagalan koneksi basis data secara aman (*graceful*).
 
-### Contoh Respons (Database Belum Terhubung / Docker Belum Aktif):
+### Contoh Respons (HTTP 503, Backend Hidup tetapi Database Belum Terhubung):
 ```json
 {
-  "status": "ok",
+  "status": "degraded",
   "service": "SIGAP Backend REST API (Laravel)",
-  "version": "0.2.0-phase2",
+  "version": "0.1.0-baseline",
   "target_intersection": "Perempatan Jl. Ibrahim Adjie - Mall Tenth Avenue, Bandung",
   "atcs_mode": "ATCS_NORMAL",
+  "operating_context": "simulator",
   "database": {
     "connected": false,
     "driver": "pgsql",
@@ -65,14 +68,15 @@ Base URL: `http://localhost:8000/api`
 }
 ```
 
-### Contoh Respons (Database Terhubung):
+### Contoh Respons (HTTP 200, Database Terhubung):
 ```json
 {
   "status": "ok",
   "service": "SIGAP Backend REST API (Laravel)",
-  "version": "0.2.0-phase2",
+  "version": "0.1.0-baseline",
   "target_intersection": "Perempatan Jl. Ibrahim Adjie - Mall Tenth Avenue, Bandung",
   "atcs_mode": "ATCS_NORMAL",
+  "operating_context": "simulator",
   "database": {
     "connected": true,
     "driver": "pgsql",
@@ -348,7 +352,7 @@ Format mengembalikan objek simpang tunggal seperti pada elemen array di endpoint
     "current_mode": "ATCS_NORMAL",
     "is_ai_healthy": false,
     "is_cctv_healthy": false,
-    "notes": "Baseline prototype belum terhubung ke CCTV dan AI service",
+    "notes": "Simulator ATCS_NORMAL; menunggu data. CCTV belum dikonfigurasi dan AI standby tanpa inferensi.",
     "recorded_at": "2026-09-23T00:30:00+07:00"
   }
 }

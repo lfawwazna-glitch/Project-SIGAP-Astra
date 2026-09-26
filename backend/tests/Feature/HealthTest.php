@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Support\Facades\DB;
+use RuntimeException;
 use Tests\TestCase;
 
 class HealthTest extends TestCase
@@ -31,12 +33,26 @@ class HealthTest extends TestCase
             ])
             ->assertJson([
                 'status' => 'ok',
+                'operating_context' => 'simulator',
                 'service' => 'SIGAP Backend REST API (Laravel)',
                 'target_intersection' => 'Perempatan Jl. Ibrahim Adjie - Mall Tenth Avenue, Bandung',
                 'database' => [
+                    'connected' => true,
                     'driver' => 'pgsql',
                 ],
             ]);
+    }
+
+    public function test_health_reports_database_failure_as_unavailable(): void
+    {
+        DB::shouldReceive('connection->getPdo')
+            ->once()
+            ->andThrow(new RuntimeException('Database unavailable for this test.'));
+
+        $this->getJson('/api/health')
+            ->assertStatus(503)
+            ->assertJsonPath('status', 'degraded')
+            ->assertJsonPath('database.connected', false);
     }
 
     /**
